@@ -135,43 +135,41 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 with tab1:
     st.subheader("📊 Descriptive Analysis")
     
-    # Bar Chart
+    # 1. Bar Chart
     fig_bar = px.bar(filtered_data, x="Year", y="WaterConsumptionMLD", color="Strata", barmode="group",
                      title="Average Household Water Consumption by Strata")
     st.plotly_chart(fig_bar, use_container_width=True)
     
-    # Box Plot
+    # 2. Box Plot & Scatter Plot (Side-by-Side)
     col_a, col_b = st.columns(2)
     with col_a:
         fig_box = px.box(filtered_data, x="Strata", y="WaterConsumptionMLD", color="Strata",
-                         title="Consumption Distribution (Urban vs Rural)")
+                         title="Urban vs Rural Water Consumption Distribution")
         st.plotly_chart(fig_box, use_container_width=True)
+        
     with col_b:
         fig_scatter = px.scatter(filtered_data, x="WaterAccessPercent", y="WaterConsumptionMLD", color="Strata",
                                  title="Impact of Water Access on Consumption")
         st.plotly_chart(fig_scatter, use_container_width=True)
         
-    # Water Access vs Consumption
-    fig_scatter = px.scatter(
-        filtered,
-        x="WaterAccessPercent", y="WaterConsumptionMLD",
-        color="Strata", title="Water Access vs Consumption"
-    )
-    st.plotly_chart(fig_scatter, use_container_width=True)
-
-    # Correlation Matrix (Optional)
-    numeric_filtered = filtered.select_dtypes(include="number")
-    corr = numeric_filtered.corr()
-    fig_heatmap = ff.create_annotated_heatmap(
-        z=corr.values,
-        x=list(corr.columns),
-        y=list(corr.index),
-        colorscale="Viridis"
-    )
-    st.plotly_chart(fig_heatmap, use_container_width=True)
-    st.markdown("Correlation matrix showing relationships between variables.")
-
-
+    # 3. Correlation Matrix 
+    # Select only numeric columns for correlation
+    numeric_filtered = filtered_data.select_dtypes(include="number")
+    
+    if not numeric_filtered.empty:
+        corr = numeric_filtered.corr().round(2) 
+        
+        # Create Annotated Heatmap
+        fig_heatmap = ff.create_annotated_heatmap(
+            z=corr.values,
+            x=list(corr.columns),
+            y=list(corr.index),
+            colorscale="Viridis",
+            showscale=True
+        )
+        st.plotly_chart(fig_heatmap, use_container_width=True)
+        st.markdown("Correlation matrix showing relationships between variables.")
+        
 # ===============================
 # TAB 2: TRENDS
 # ===============================
@@ -362,4 +360,5 @@ with tab6:
 # --- FOOTER ---
 st.markdown("---")
 st.markdown("<center>Machine Learning Group Project | Universiti Malaysia Pahang</center>", unsafe_allow_html=True)
+
 
