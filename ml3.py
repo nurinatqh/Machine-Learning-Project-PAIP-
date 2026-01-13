@@ -12,7 +12,7 @@ import numpy as np
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
-    page_title="Water Consumption AI Dashboard",
+    page_title="Household Water Consumption Dashboard",
     page_icon="💧",
     layout="wide"
 )
@@ -44,8 +44,9 @@ set_background()
 
 # --- HEADER ---
 st.title("💧 Household Water Consumption Dashboard")
-st.markdown("### 🤖 Machine Learning Analytics & Forecasting for Sustainable Planning")
-st.caption("Data Source: DOSM (2020-2023) | Validation: PAIP | Model: Multiple Linear Regression")
+st.markdown("### 🤖 Machine Learning Analysis Using Water Access Indicators\n"
+           with PAIP Treated Water Supply Comparison)
+st.caption("📊 DOSM | 🚰 PAIP (Pahang) | 🤖 Machine Learning")
 
 # --- DATA LOADING FUNCTIONS ---
 @st.cache_data
@@ -124,7 +125,7 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "📈 Trends", 
     "🤖 Model Evaluation", 
     "🚰 Supply vs Demand", 
-    "🔮 Predictor (Deploy)",  # <--- THIS IS THE NEW CRITICAL TAB
+    "🔮 Predictor (Deploy)", 
     "ℹ️ Project Info"
 ])
 
@@ -154,7 +155,7 @@ with tab1:
 # TAB 2: TRENDS
 # ===============================
 with tab2:
-    st.subheader("📈 Historical Consumption Trends")
+    st.subheader("📈 Consumption Trend Over Time")
     fig_line = px.line(filtered_data, x="Year", y="WaterConsumptionMLD", color="Strata", markers=True,
                        title=f"Time Series Analysis for {selected_state}")
     st.plotly_chart(fig_line, use_container_width=True)
@@ -176,6 +177,22 @@ with tab3:
     st.dataframe(pd.DataFrame(results_data), use_container_width=True, hide_index=True)
     
     st.success("✅ **Selected Model: Multiple Linear Regression (MLR)**\n\nChosen for its superior accuracy (Lowest RMSE) and high interpretability for policy planning.")
+        st.success("""
+    **Multiple Linear Regression (MLR)** was selected as the final model
+    for deployment.
+    """)
+
+    st.markdown("""
+    **Justification:**
+    - Achieved the **lowest RMSE** for both urban and rural datasets
+    - Recorded the **highest R² values**, indicating excellent explanatory power
+    - Provides **high interpretability**, allowing policymakers to understand
+      how water access indicators influence consumption patterns
+
+    Due to its strong predictive performance and transparency, MLR is the
+    most suitable model for supporting **sustainable water resource planning**.
+    """)
+
 
 # ===============================
 # TAB 4: SUPPLY VS DEMAND (PAHANG)
@@ -205,7 +222,7 @@ with tab4:
         st.info("The gap between the lines represents Non-Revenue Water (NRW) and Industrial Usage.")
 
 # ===============================
-# TAB 5: PREDICTOR (DEPLOYMENT)
+# TAB 5: PREDICTOR 
 # ===============================
 with tab5:
     st.header("🔮 Future Consumption Predictor")
@@ -284,20 +301,43 @@ with tab5:
                 st.error(f"Prediction Error: {e}. Please check feature column names.")
 
 # ===============================
-# TAB 6: PROJECT INFO
+# TAB 6: ABOUT
 # ===============================
-with tab6:
-    st.header("ℹ️ Project Background")
+with tab5:
+    st.header("ℹ️ About This Project")
+
     st.markdown("""
-    **Objectives:**
-    1. Analyse consumption patterns (DOSM).
-    2. Correlate water access with usage.
-    3. Develop ML models (MLR, RF, XGBoost).
-    4. Validate with PAIP data and deploy for planning.
-    
-    **Team:** [PAIP]
+    ### 📘 Project Description
+    This project analyses household water consumption patterns in Malaysia
+    using data from the Department of Statistics Malaysia (DOSM).
+    Machine learning models are developed to predict domestic water consumption
+    based on water access indicators, with a focus on understanding differences
+    between urban and rural areas.
+
+    Treated water supply data from Pengurusan Air Pahang Berhad (PAIP) is used
+    as a case study to compare predicted household water demand with actual
+    treated water supply trends, supporting demand–supply assessment.
+
+    ### 🎯 Project Objectives
+    1. To analyse household water consumption patterns across Malaysian states
+       and between urban and rural areas.
+    2. To examine the relationship between water access indicators and household
+       water consumption.
+    3. To develop and evaluate machine learning models for predicting household
+       water consumption.
+    4. To compare predicted consumption trends with treated water supply data
+       from PAIP using an interactive dashboard.
+
+    ### 🌍 Project Impact
+    This dashboard provides a data-driven decision support tool that helps
+    visualise household water demand trends and their alignment with treated
+    water supply. The findings can support more informed and sustainable water
+    resource planning and policy discussions, particularly in understanding
+    urban–rural consumption dynamics.
     """)
+
 
 # --- FOOTER ---
 st.markdown("---")
 st.markdown("<center>Machine Learning Group Project | Universiti Malaysia Pahang</center>", unsafe_allow_html=True)
+
