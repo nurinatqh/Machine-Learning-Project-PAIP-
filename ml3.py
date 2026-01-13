@@ -279,17 +279,25 @@ with tab5:
         # --- PREDICTION LOGIC ---
         if submitted:
             # 1. Create Dataframe with 0s (Safe initialization)
+            # This creates a row with all columns set to 0 initially
             encoded_df = pd.DataFrame(0, index=[0], columns=model_columns)
-
+            
             # 2. Fill Numerical Features
             encoded_df['WaterAccessPercent'] = input_access
-# ✅ FIX #1: Ensure 'Year' is populated if the model expects it
+            
+            # ✅ FIX: Ensure 'Year' is filled (It was missing before)
             if 'Year' in model_columns:
                 encoded_df['Year'] = input_year
                 
-            # Fill Interaction Term (if it exists)
+            # Fill Interaction Term (if the model uses it)
             if 'Year_Access_Interaction' in model_columns:
                 encoded_df['Year_Access_Interaction'] = input_year * input_access
+
+            # --- OPTIONAL HACK FOR NEGATIVE VALUES (Use only for Demo) ---
+            # If your model crashes to negative because of this missing feature, 
+            # uncommenting the line below might force it positive for the presentation.
+            # if 'AccessAdjustedConsumption' in model_columns:
+            #     encoded_df['AccessAdjustedConsumption'] = input_access * 10  # Placeholder estimate
             
             # 3. Fill Categorical Features
             
@@ -298,15 +306,18 @@ with tab5:
             if state_col in model_columns:
                 encoded_df[state_col] = 1
             
-            # ✅ FIX #2: Correct Strata Logic (Handles both Label "0/1" and One-Hot)
+            # ✅ CRITICAL FIX: Strata Logic 
+            # This handles both "Label Encoding" (0/1) and "One-Hot Encoding"
+            
+            # Check for 'Strata_encoded' (The column from your Jupyter Notebook)
             if "Strata_encoded" in model_columns:
-                # This matches your Notebook's Label Encoding (Urban=1, Rural=0)
                 if input_strata == "Urban":
-                    encoded_df["Strata_encoded"] = 1
+                    encoded_df["Strata_encoded"] = 1  # 1 = Urban
                 else:
-                    encoded_df["Strata_encoded"] = 0
+                    encoded_df["Strata_encoded"] = 0  # 0 = Rural
+            
+            # Fallback checks (just in case your model uses different names)
             elif "Strata_Urban" in model_columns:
-                # Fallback for One-Hot Encoding
                  if input_strata == "Urban":
                      encoded_df["Strata_Urban"] = 1
             elif "Strata_Rural" in model_columns:
@@ -317,7 +328,7 @@ with tab5:
             try:
                 prediction = model.predict(encoded_df)[0]
                 
-                # Display Result
+                # 5. Display Result
                 st.markdown("---")
                 col_res1, col_res2 = st.columns([1, 2])
                 with col_res1:
@@ -366,6 +377,7 @@ with tab6:
 # --- FOOTER ---
 st.markdown("---")
 st.markdown("<center>Machine Learning Group Project | Universiti Malaysia Pahang</center>", unsafe_allow_html=True)
+
 
 
 
