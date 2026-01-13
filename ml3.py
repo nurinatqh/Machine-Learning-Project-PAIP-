@@ -45,7 +45,7 @@ set_background()
 # --- HEADER ---
 st.title("💧 Household Water Consumption Dashboard")
 st.markdown("### 🤖 Machine Learning Analysis Using Water Access Indicators\n"
-           with PAIP Treated Water Supply Comparison)
+           "with PAIP Treated Water Supply Comparison")
 st.caption("📊 DOSM | 🚰 PAIP (Pahang) | 🤖 Machine Learning")
 
 # --- DATA LOADING FUNCTIONS ---
@@ -340,4 +340,5 @@ with tab5:
 # --- FOOTER ---
 st.markdown("---")
 st.markdown("<center>Machine Learning Group Project | Universiti Malaysia Pahang</center>", unsafe_allow_html=True)
+
 
