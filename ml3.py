@@ -149,7 +149,7 @@ with tab1:
         
     with col_b:
         fig_scatter = px.scatter(filtered_data, x="WaterAccessPercent", y="WaterConsumptionMLD", color="Strata",
-                                 title="Impact of Water Access on Consumption")
+                                 title="Water Access vs Consumption")
         st.plotly_chart(fig_scatter, use_container_width=True)
         
     # 3. Correlation Matrix 
@@ -184,7 +184,11 @@ with tab2:
 # ===============================
 with tab3:
     st.subheader("🤖 Machine Learning Model Performance")
-    st.markdown("Comparative analysis of 5 algorithms to determine the best predictor.")
+    st.markdown("""
+    In this study, several machine learning models were developed and evaluated
+    to predict household water consumption for **urban and rural areas**.
+    The performance of each model was assessed using **RMSE** and **R² score**.
+    """)
     
     results_data = {
         "Model": ["Multiple Linear Regression (MLR)", "SVR", "Random Forest", "XGBoost", "ANN"],
@@ -193,9 +197,8 @@ with tab3:
         "Rural RMSE": [15.29, 35.64, 22.26, 17.34, 56.29],
         "Rural R²": [0.9977, 0.9875, 0.9951, 0.9970, 0.9689]
     }
+    st.subheader("📊 Model Performance Comparison")
     st.dataframe(pd.DataFrame(results_data), use_container_width=True, hide_index=True)
-    
-    st.success("✅ **Selected Model: Multiple Linear Regression (MLR)**\n\nChosen for its superior accuracy (Lowest RMSE) and high interpretability for policy planning.")
     
     st.success("""
     **Multiple Linear Regression (MLR)** was selected as the final model
@@ -218,10 +221,14 @@ with tab3:
 # TAB 4: SUPPLY VS DEMAND (PAHANG)
 # ===============================
 with tab4:
-    st.subheader("🚰 Supply vs Demand Validation (Pahang Case Study)")
+    st.subheader("🚰 Treated Water Supply vs Household Demand")
     
     if selected_state != "Pahang":
-        st.warning("⚠️ Supply data is strictly confidential and only available for Pahang. Please select 'Pahang' in the sidebar to view this validation.")
+        st.warning("ℹ️ **PAIP treated water supply data is only available for Pahang.**  \n"
+            "Supply–demand comparison is therefore restricted to Pahang to "
+            "avoid misleading interpretation.  \n\n"
+            "For other states, the dashboard focuses on household water "
+            "consumption analysis only.")
     else:
         # Process PAIP Data (Convert m3/year to MLD)
         paip_agg = paip.groupby("Year")["Treated"].mean().reset_index()
@@ -239,7 +246,12 @@ with tab4:
                           labels={"value": "Volume (MLD)", "variable": "Metric"},
                           title="Household Demand (DOSM) vs Treated Supply (PAIP)")
         st.plotly_chart(fig_val, use_container_width=True)
-        st.info("The gap between the lines represents Non-Revenue Water (NRW) and Industrial Usage.")
+        st.info("Household Water Demand vs PAIP Treated Water Supply (Pahang)")
+
+        st.caption(
+            "📌 PAIP data originally reported in m³/year and converted to MLD "
+            "to ensure fair comparison with household consumption data."
+        )
 
 # ===============================
 # TAB 5: PREDICTOR 
@@ -360,5 +372,6 @@ with tab6:
 # --- FOOTER ---
 st.markdown("---")
 st.markdown("<center>Machine Learning Group Project | Universiti Malaysia Pahang</center>", unsafe_allow_html=True)
+
 
 
