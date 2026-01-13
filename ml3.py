@@ -45,7 +45,7 @@ set_background()
 # --- HEADER ---
 st.title("💧 Household Water Consumption Dashboard")
 st.markdown("### 🤖 Machine Learning Analysis Using Water Access Indicators\n"
-           "with PAIP Treated Water Supply Comparison")
+            "with PAIP Treated Water Supply Comparison")
 st.caption("📊 DOSM | 🚰 PAIP (Pahang) | 🤖 Machine Learning")
 
 # --- DATA LOADING FUNCTIONS ---
@@ -177,7 +177,8 @@ with tab3:
     st.dataframe(pd.DataFrame(results_data), use_container_width=True, hide_index=True)
     
     st.success("✅ **Selected Model: Multiple Linear Regression (MLR)**\n\nChosen for its superior accuracy (Lowest RMSE) and high interpretability for policy planning.")
-        st.success("""
+    
+    st.success("""
     **Multiple Linear Regression (MLR)** was selected as the final model
     for deployment.
     """)
@@ -303,7 +304,7 @@ with tab5:
 # ===============================
 # TAB 6: ABOUT
 # ===============================
-with tab5:
+with tab6:
     st.header("ℹ️ About This Project")
 
     st.markdown("""
@@ -340,5 +341,3 @@ with tab5:
 # --- FOOTER ---
 st.markdown("---")
 st.markdown("<center>Machine Learning Group Project | Universiti Malaysia Pahang</center>", unsafe_allow_html=True)
-
-
