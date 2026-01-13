@@ -278,51 +278,46 @@ with tab5:
             
         # --- PREDICTION LOGIC ---
         if submitted:
-            # 1. Create Raw Input Data
-            # Note: We must recreate the exact features used in training
-            input_data = pd.DataFrame({
-                'Year': [input_year],
-                'WaterAccessPercent': [input_access],
-                'AccessAdjustedConsumption': [0], # Placeholder if not used directly
-                'AccessChange': [0], # Placeholder
-                'Year_Access_Interaction': [input_year * input_access] # Interaction Term
-            })
-            
-            # 2. One-Hot Encoding (Manual Matching)
-            # Create a dataframe with all 0s for the columns the model expects
+            # 1. Create Dataframe with 0s (Safe initialization)
             encoded_df = pd.DataFrame(0, index=[0], columns=model_columns)
-            
-            # Fill Numeric Values
+
+            # 2. Fill Numerical Features
             encoded_df['WaterAccessPercent'] = input_access
-            # If your model used 'Year', fill it. If you dropped 'Year' in code, ignore it.
-            # Based on your previous code, you dropped 'Year' but kept 'Year_Access_Interaction'
+# ✅ FIX #1: Ensure 'Year' is populated if the model expects it
+            if 'Year' in model_columns:
+                encoded_df['Year'] = input_year
+                
+            # Fill Interaction Term (if it exists)
             if 'Year_Access_Interaction' in model_columns:
                 encoded_df['Year_Access_Interaction'] = input_year * input_access
             
-            # Fill Categorical Values (State & Strata)
-            # The column names usually look like 'State_Johor' or 'Strata_Urban'
-            state_col = f"State_{input_state}"
-            strata_col = f"Strata_encoded_{input_strata}" # OR just 'Strata_Urban' check your pickle columns
-            # NOTE: I am guessing the column name format based on standard pandas.get_dummies.
-            # Ideally, print(model_columns) in your notebook to check exact names.
+            # 3. Fill Categorical Features
             
-            # Try to find the matching column for State
+            # State One-Hot Encoding
+            state_col = f"State_{input_state}"
             if state_col in model_columns:
                 encoded_df[state_col] = 1
             
-            # Try to find matching column for Strata
-            # If you used 'Strata_encoded' in training, you might need to map Urban->1, Rural->0
-            # OR if you used get_dummies on Strata, look for Strata_Urban
-            if "Strata_Urban" in model_columns and input_strata == "Urban":
-                 encoded_df["Strata_Urban"] = 1
-            elif "Strata_Rural" in model_columns and input_strata == "Rural":
-                 encoded_df["Strata_Rural"] = 1
+            # ✅ FIX #2: Correct Strata Logic (Handles both Label "0/1" and One-Hot)
+            if "Strata_encoded" in model_columns:
+                # This matches your Notebook's Label Encoding (Urban=1, Rural=0)
+                if input_strata == "Urban":
+                    encoded_df["Strata_encoded"] = 1
+                else:
+                    encoded_df["Strata_encoded"] = 0
+            elif "Strata_Urban" in model_columns:
+                # Fallback for One-Hot Encoding
+                 if input_strata == "Urban":
+                     encoded_df["Strata_Urban"] = 1
+            elif "Strata_Rural" in model_columns:
+                 if input_strata == "Rural":
+                     encoded_df["Strata_Rural"] = 1
             
-            # 3. Predict
+            # 4. Predict
             try:
                 prediction = model.predict(encoded_df)[0]
                 
-                # 4. Display Result
+                # Display Result
                 st.markdown("---")
                 col_res1, col_res2 = st.columns([1, 2])
                 with col_res1:
@@ -331,7 +326,6 @@ with tab5:
                     st.info(f"💡 Planning Insight: In {input_year}, if {input_state} ({input_strata}) has {input_access}% water access, the estimated domestic demand is {prediction:.0f} Million Liters/Day.")
             except Exception as e:
                 st.error(f"Prediction Error: {e}. Please check feature column names.")
-
 # ===============================
 # TAB 6: ABOUT
 # ===============================
@@ -372,6 +366,7 @@ with tab6:
 # --- FOOTER ---
 st.markdown("---")
 st.markdown("<center>Machine Learning Group Project | Universiti Malaysia Pahang</center>", unsafe_allow_html=True)
+
 
 
 
