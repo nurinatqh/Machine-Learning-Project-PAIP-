@@ -133,11 +133,11 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 # TAB 1: EDA
 # ===============================
 with tab1:
-    st.subheader(f"Exploratory Data Analysis: {selected_state}")
+    st.subheader("📊 Descriptive Analysis")
     
     # Bar Chart
     fig_bar = px.bar(filtered_data, x="Year", y="WaterConsumptionMLD", color="Strata", barmode="group",
-                     title="Annual Consumption by Strata")
+                     title="Average Household Water Consumption by Strata")
     st.plotly_chart(fig_bar, use_container_width=True)
     
     # Box Plot
@@ -150,6 +150,27 @@ with tab1:
         fig_scatter = px.scatter(filtered_data, x="WaterAccessPercent", y="WaterConsumptionMLD", color="Strata",
                                  title="Impact of Water Access on Consumption")
         st.plotly_chart(fig_scatter, use_container_width=True)
+        
+    # Water Access vs Consumption
+    fig_scatter = px.scatter(
+        filtered,
+        x="WaterAccessPercent", y="WaterConsumptionMLD",
+        color="Strata", title="Water Access vs Consumption"
+    )
+    st.plotly_chart(fig_scatter, use_container_width=True)
+
+    # Correlation Matrix (Optional)
+    numeric_filtered = filtered.select_dtypes(include="number")
+    corr = numeric_filtered.corr()
+    fig_heatmap = ff.create_annotated_heatmap(
+        z=corr.values,
+        x=list(corr.columns),
+        y=list(corr.index),
+        colorscale="Viridis"
+    )
+    st.plotly_chart(fig_heatmap, use_container_width=True)
+    st.markdown("Correlation matrix showing relationships between variables.")
+
 
 # ===============================
 # TAB 2: TRENDS
@@ -157,7 +178,7 @@ with tab1:
 with tab2:
     st.subheader("📈 Consumption Trend Over Time")
     fig_line = px.line(filtered_data, x="Year", y="WaterConsumptionMLD", color="Strata", markers=True,
-                       title=f"Time Series Analysis for {selected_state}")
+                       title=f"Household Water Consumption Trend")
     st.plotly_chart(fig_line, use_container_width=True)
 
 # ===============================
@@ -341,3 +362,4 @@ with tab6:
 # --- FOOTER ---
 st.markdown("---")
 st.markdown("<center>Machine Learning Group Project | Universiti Malaysia Pahang</center>", unsafe_allow_html=True)
+
