@@ -43,7 +43,7 @@ def set_background():
 set_background()
 
 # --- HEADER ---
-st.title("💧 Smart Water Consumption Prediction System")
+st.title("💧 Household Water Consumption Dashboard")
 st.markdown("### 🤖 Machine Learning Analytics & Forecasting for Sustainable Planning")
 st.caption("Data Source: DOSM (2020-2023) | Validation: PAIP | Model: Multiple Linear Regression")
 
@@ -52,15 +52,15 @@ st.caption("Data Source: DOSM (2020-2023) | Validation: PAIP | Model: Multiple L
 def load_csv_data():
     # UPDATE THESE PATHS TO YOUR ACTUAL FILE LOCATIONS
     # Use relative paths if files are in the same folder, e.g., "cleaned_water_dataset.csv"
-    dosm = pd.read_csv(r"C:\Users\USER\OneDrive\ML\group project\cleaned_water_dataset.csv") 
-    paip = pd.read_csv(r"C:\Users\USER\OneDrive\ML\group project\Treated Overall By Year.csv")
+    dosm = pd.read_csv("cleaned_water_dataset.csv") 
+    paip = pd.read_csv("Treated Overall By Year.csv")
     return dosm, paip
 
 @st.cache_resource
 def load_ml_model():
     try:
-        model = joblib.load(r"C:\Users\USER\OneDrive\ML\group project\mlr_model.pkl")
-        model_columns = joblib.load(r"C:\Users\USER\OneDrive\ML\group project\model_columns.pkl")
+        model = joblib.load("mlr_model.pkl")
+        model_columns = joblib.load("model_columns.pkl")
         return model, model_columns
     except FileNotFoundError:
         st.error("⚠️ Model files not found! Please run Part 1 in Jupyter Notebook to generate .pkl files.")
@@ -295,7 +295,7 @@ with tab6:
     3. Develop ML models (MLR, RF, XGBoost).
     4. Validate with PAIP data and deploy for planning.
     
-    **Team:** [Your Group Name]
+    **Team:** [PAIP]
     """)
 
 # --- FOOTER ---
